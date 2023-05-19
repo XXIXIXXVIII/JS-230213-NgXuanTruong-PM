@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import instance from "../apiAxios.config";
 import { Link } from "react-router-dom";
 
+
 function Home() {
   const [dataGame, setDataGame] = useState([]);
   const [gameName, setGameName] = useState();
@@ -13,10 +14,14 @@ function Home() {
     };
     fetch();
   }, [dataGame]);
-const handleAdd = ()=>{
-  let result = instance.post('/', {gameName })
-  setGameName("")
-}
+  const handleAdd = () => {
+    instance.post("/", { gameName });
+    setGameName("");
+  };
+
+  const handleDel =(item)=>{
+    instance.post("/deletegame",  item )
+  }
 
   return (
     <>
@@ -30,16 +35,19 @@ const handleAdd = ()=>{
           type="text"
           value={gameName}
           placeholder="Add Game Name"
-          onChange={(e)=>setGameName(e.target.value)}
+          onChange={(e) => setGameName(e.target.value)}
         ></input>
-        <button onClick={handleAdd}>Add</button>
+        <button className="bg-blue-500  hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleAdd}>Add</button>
       </div>
 
       {dataGame?.map((item, index) => (
-        <div key={index}>
-          <Link to={`/${item.gameID}`}>
-            <button className="rounded bg-red-500 mt-5">{item.gameName}</button>
+        <div className="flex" key={index}>
+          <Link className="mt-3" to={`/${item.gameID}`}>
+            <button className="bg-blue-500  hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              {item.gameName}
+            </button>
           </Link>
+          <button onClick={()=>handleDel(item)} className="bg-red-500 hover:bg-red-700 text-white text-sm mt-3 ml-3 px-3 rounded">X</button>
         </div>
       ))}
     </>
